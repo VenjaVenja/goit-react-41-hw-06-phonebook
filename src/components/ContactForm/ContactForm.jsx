@@ -1,8 +1,15 @@
+import { nanoid } from "nanoid";
 import { useState } from 'react';
 import { Form, Label, Text, Input, AddContactBtn } from './ContactForm.styled';
-import propTypes from 'prop-types';
+import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from "react-redux";
+import { addContacts, getContacts } from "redux/itemsSlice";
 
-export const ContactForm = ({ onSubmit }) => {
+export const ContactForm = () => {
+
+  const dispatch = useDispatch();
+  const contactsItems = useSelector(getContacts);
+
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -23,9 +30,20 @@ export const ContactForm = ({ onSubmit }) => {
     }
   };
 
+  const heandleAddContact = ({ name, number }) => {
+    const newContact = {
+      id: nanoid(),
+      name,
+      number,
+    };
+    contactsItems.some(contact => contact.name.toLowerCase() === name.toLowerCase())
+      ? toast.error(`${name} is already in contacts`)
+      : dispatch(addContacts(newContact))
+  };
+
   const heandleSubmit = event => {
     event.preventDefault();
-    onSubmit({name, number})
+    heandleAddContact({name, number})
     formFieldsReset()
   };
 
@@ -68,8 +86,4 @@ export const ContactForm = ({ onSubmit }) => {
       </Form>
     </>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: propTypes.func.isRequired,
 };
