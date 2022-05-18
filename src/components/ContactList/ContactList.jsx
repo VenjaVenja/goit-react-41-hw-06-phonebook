@@ -14,7 +14,6 @@ export const ContactList = () => {
       contact.name.toLowerCase().includes(normilizFilterValue)
     );
   };
-    console.log(filteredContactList())
     
   const deleteContact = id => {
     return dispatch(removeContacts(id));
